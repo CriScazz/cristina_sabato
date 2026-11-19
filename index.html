@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cristina Sabato</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-logo {
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--black);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            position: relative;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.4;
+            color: lime;
+        }
+
+        section {
+            min-height: auto;
+            padding: 6rem 4rem;
+        }
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 12vw, 10rem);
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: -0.03em;
+            text-transform: uppercase;
+        }
+
+        .hero-title-line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero-title .char {
+            display: inline-block;
+            opacity: 0;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-top: 2rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            opacity: 0;
+        }
+
+        .hero-line {
+            width: 60px;
+            height: 1px;
+            background: var(--black);
+            margin-top: 2rem;
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+
+        .about {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8rem;
+            align-items: center;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            opacity: 0;
+            display: block;
+        }
+
+        .about-content {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .about-text {
+            font-size: 1.5rem;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .about-details {
+            margin-top: 4rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .detail-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            opacity: 0.6;
+            margin-bottom: 0.3rem;
+        }
+
+        .detail-value {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .work-item {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .work-item:nth-child(3n+1) {
+            grid-column: span 2;
+        }
+
+        .work-image {
+            width: 100%;
+            aspect-ratio: 16/10;
+            background: #f0f0f0;
+            overflow: hidden;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .work-item:hover .work-image {
+            transform: scale(1.03);
+        }
+
+        .work-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .work-item:hover .work-image img {
+            transform: scale(1.05);
+        }
+
+        .work-info {
+            padding: 1.2rem 0;
+        }
+
+        .work-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .work-year {
+            font-size: 0.8rem;
+            font-weight: 400;
+            opacity: 0.6;
+        }
+
+        .work-desc {
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .work-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--black);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .work-item:hover .work-overlay {
+            opacity: 0.15;
+        }
+
+        .contact {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact-content {
+            opacity: 0;
+            transform: translateY(30px);
+            display: ruby;
+        }
+
+        .contact-content .section-label {
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-email {
+            display: block;
+            margin-top: 0;
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--black);
+            position: relative;
+            display: inline-block;
+            transition: transform 0.3s ease;
+            margin-left: 5rem;
+        }
+
+        .contact-email:hover {
+            transform: translateX(10px);
+        }
+
+        .contact-email::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--black);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .contact-email:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 2rem;
+            margin-top: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .social-links a {
+            color: var(--black);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: opacity 0.3s ease;
+        }
+
+        .social-links a:hover {
+            opacity: 0.5;
+        }
+
+        .footer {
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            opacity: 0;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            width: 90%;
+            max-width: 900px;
+            background: var(--white);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-media {
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .modal-media img,
+        .modal-media video {
+            width: 100%;
+            height: auto;
+            max-height: 55vh;
+            display: block;
+        }
+
+        .modal-info {
+            padding: 1.5rem 2rem 2rem;
+            overflow: visible;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .modal-year {
+            font-size: 0.85rem;
+            font-weight: 400;
+            opacity: 0.6;
+            margin-top: 0.2rem;
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--black);
+            color: var(--white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-close svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .modal-description {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #333;
+            max-width: none;
+        }
+
+        @media (max-width: 1024px) {
+            section {
+                padding: 5rem 2rem;
+            }
+
+            nav {
+                padding: 1.5rem 2rem;
+            }
+
+            .about {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+
+            .works-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .work-item:nth-child(3n+1) {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .nav-links a {
+                font-size: 0.75rem;
+            }
+
+            section {
+                padding: 4rem 1.5rem;
+            }
+
+            .hero {
+                min-height: auto;
+                padding-top: 6rem;
+                padding-bottom: 4rem;
+            }
+
+            .hero-subtitle {
+                margin-top: 1.5rem;
+            }
+
+            .hero-line {
+                margin-top: 1.5rem;
+            }
+
+            .about-text {
+                font-size: 1.2rem;
+            }
+
+            .works-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+
+            .work-info {
+                padding: 0.8rem 0;
+            }
+
+            .work-desc {
+                font-size: 0.75rem;
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+
+            .modal-media img,
+            .modal-media video {
+                max-height: 40vh;
+            }
+
+            .modal-info {
+                padding: 1rem 1.25rem 1.25rem;
+            }
+
+            .modal-title {
+                font-size: 1.2rem;
+            }
+
+            .modal-close {
+                width: 36px;
+                height: 36px;
+            }
+
+            .modal-close svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .modal-description {
+                font-size: 0.85rem;
+                line-height: 1.5;
+            }
+
+            .contact-content .section-label {
+                margin-bottom: 1.5rem;
+            }
+
+            .contact-email {
+                font-size: 1.2rem;
+            }
+
+            .social-links {
+                flex-direction: column;
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+
+            .footer {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+                padding: 2rem 1.5rem;
+            }
+
+            .contact-email {
+                font-size: 1.2rem;
+                margin-left: 0;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <nav>
+        <div class="nav-logo">Cristina Sabato</div>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#works">Works</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero" id="hero">
+        <h1 class="hero-title">
+            <span class="hero-title-line">Cristina</span>
+            <span class="hero-title-line">Sabato</span>
+        </h1>
+        <p class="hero-subtitle">New Media Artist - Torino</p>
+        <div class="hero-line"></div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="about-content">
+            <span class="section-label">About</span>
+            <p class="about-text">
+                I began as a theatre set designer, and over time my path has evolved to
+                embrace the possibilities offered by new media and digital visual
+                storytelling. Today I work as a multimedia artist, combining 3D modelling,
+                interactive installations and research on artificial intelligence.
+                My practice is grounded in the idea of bringing the culturally repressed
+                back to light, using emerging technologies as tools for building collective
+                and shared narratives. Through a critical approach to the language of
+                code and to the technologies I employ, I try to explore the potential of
+                digital media not only as means of representation, but as active devices
+                of memory, transformation and imagination.
+            </p>
+        </div>
+        <div class="about-details">
+            <div class="detail-item">
+                <div class="detail-label">Based in</div>
+                <div class="detail-value">Turin, Italy</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Practice</div>
+                <div class="detail-value">New Media, Interactive Installation, 3D Art</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Education</div>
+                <div class="detail-value">PhD Fine Arts - Accademia di Belle Arti Catania, <i>ongoing</i></div>
+                <div class="detail-value">MA Fine Arts - Accademia Albertina di Belle Arti di Torino, 2024</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="works" id="works">
+        <span class="section-label">Selected Works</span>
+        <div class="works-grid" id="worksGrid"></div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="contact-content">
+            <span class="section-label">Contact</span>
+            <a href="mailto:cristinasabat99@gmail.com" class="contact-email">cristinasabat99@gmail.com</a>
+        </div>
+        <div class="social-links">
+            <a href="https://www.instagram.com/theriotofpotatoesandcarrots/" target="_blank">Instagram</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <span>&copy; 2026 Cristina Sabato</span>
+        <span>All Rights Reserved</span>
+    </footer>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-media" id="modalMedia"></div>
+            <div class="modal-info">
+                <div class="modal-header">
+                    <div>
+                        <h2 class="modal-title" id="modalTitle"></h2>
+                        <p class="modal-year" id="modalYear"></p>
+                    </div>
+                    <button class="modal-close" id="modalClose">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <p class="modal-description" id="modalDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const works = [
+            {
+                id: 1,
+                title: "Brainrot",
+                year: 2026,
+                type: "image",
+                src: "./assets/img/brainrot.png",
+                description: "Directed by Maria Luigia Gioffré, produced as part of the second-year PhD programme at the Silvio d’Amico National Academy of Dramatic Arts. Worked as Multimedia Designer, creating 3D reconstructions of the five performers through facial modelling in Blender using the FaceBuilder add-on, and implementing markerless motion capture to record body movement and facial expressions."
+            },
+            {
+                id: 2,
+                title: "Mirror Mirror",
+                year: 2024,
+                type: "image",
+                src: "./assets/img/mirror_mirror.jpg",
+                description: "Support in the production of multimedia content for Mirror Mirror, an interactive installation based on generative audio and video, developed with the aid of artificial intelligence. The work, presented as a temporary exhibition at the Museo Furioso, stages a process of morphing between a real individual and their digital double, passing, in a contemporary key, through the twelve archetypal identities inspired by the characters of Ariosto’s poem.."
+            },
+            {
+                id: 3,
+                title: "Museo Furioso",
+                year: 2023,
+                type: "image",
+                src: "./assets/img/museo_furioso.jpg",
+                description: "Production, creation, animation and texturing of the 3D environments, green screen work combined with advanced compositing techniques directly inside three-dimensional spaces, for the Museo Furioso, based in the Rocca Ariostesca. The project takes shape as a genuine digital stage machine, in which the characters and atmospheres of Ariosto’s poem come to life in dreamlike, layered worlds. My work aims to integrate real actors and digital environments harmoniously, creating fluid, evocative and deeply narrative visual landscapes."
+            },
+            {
+                id: 4,
+                title: "Napoleone e l'Accademia",
+                year: 2022,
+                type: "image",
+                src: "./assets/img/napoleone_accademia.png",
+                description: "Production, for the virtual exhibition Napoleone e l’Accademia at the Accademia di Belle Arti di Brera, of retopology and optimisation of the 3D models. The exhibition comprises three digital environments with over 70 works recreated through high-resolution photography and photogrammetry of the plaster casts. My contribution ensured light yet detailed models, optimising the rendering and the fluidity of the virtual experience."
+            },
+            {
+                id: 5,
+                title: "Il Tempio delle Virtù",
+                year: 2022,
+                type: "image",
+                src: "./assets/img/tempio_virtu.png",
+                description: "Digital reconstruction work based on a 1678 engraving by Giovanni Abbiati after a drawing by Gian Francesco Baroncelli, depicting a Baroque pyrotechnic machine. The work involved modelling, shading, 3D rendering and subsequent three-dimensional printing, with the aim of restoring depth, colour and texture to an image originally in black and white. The project set out to reactivate the historical memory of the work, turning a two-dimensional lithograph into a visual, tangible object capable of evoking its original scenic presence."
+            },
+            {
+                id: 6,
+                title: "Nostalgia",
+                year: 2024,
+                type: "image",
+                src: "./assets/img/nostalgia.jpg",
+                description: "Production of the multimedia content for Nostalgia, a live visual and sound narration lasting around 15 minutes. Centred on the theme of memory and nostalgia as a form of affection towards one’s personal roots, the project explores nostalgia as a way of caring for memories, in which technologies become active tools in their emergence and reworking. Through generative artificial intelligence techniques, archival photographic material, objets trouvés and sonic scraps combine to evoke a past that appears at times traumatic, at times idealised."
+            },
+                        {
+                id: 7,
+                title: "OltreFiore",
+                year: 2025,
+                type: "image",
+                src: "./assets/img/oltrefiore.png",
+                description: "Multimedia work created with artificial intelligence (ComfyUI, Image-to-Image), starting from the original botanical plates by Maddalena Lisa Mussino (Iconographia Taurinensis, 17th century). The artificial herbarium that emerges from them questions the historical relationship between nature, the feminine and stereotype. Through AI morphing techniques, the flowers are transformed into short videos inspired by the words with which some women described themselves as flowers: changeable, strong, complex. The images can be experienced in augmented reality: Mussino’s prints become markers that activate the videos, creating a dialogue between analogue and digital in an ecofeminist key."
+            },
+                        {
+                id: 8,
+                title: "Alba",
+                year: 2023,
+                type: "image",
+                src: "./assets/img/alba.png",
+                description: "Real-time rendering inspired by the works of Olafur Eliasson, based on a simulation of lenses and light sources in a 3D environment. The project is conceived as an interactive installation: the system responds to the movement of the audience by dynamically changing the positioning of the lights. Through the communication between Blender and MaxMSP, the scene generates ever-changing light projections and refractions, giving form to images sensitive to the body and to space, in a continuous relationship between perception, light and presence."
+            },
+                        {
+                id: 9,
+                title: "BiblioBabel",
+                year: 2023,
+                type: "image",
+                src: "./assets/img/bibliobabel.png",
+                description: "Production of original illustrations conceived as markers and triggers for augmented reality experiences, with the aim of promoting intercultural dialogue in the libraries of the Fondazione Giorgio Amendola and of the Municipalities of Moncalieri and Beinasco. Modelling and optimisation of low poly 3D models for web and mobile integration, ensuring lightness and accessibility, with the aim of contributing to the construction of a participatory visual narrative, involving the main linguistic communities of the area and turning collective storytelling into an augmented, immersive and inclusive experience."
+            },
+                        {
+                id: 10,
+                title: "Come cambiare e non avere la stessa forma",
+                year: 2024,
+                type: "image",
+                src: "./assets/img/come_cambiare.png",
+                description: "Development of generative video and audio content inspired by the work “Come cambiare e avere sempre la stessa forma” by Claudia Comte, produced with the software Processing. The content reacts in real time to the movements of the dancer/performer, detected via Kinect and transformed into interactive images and sounds. The visual component is processed with Touch Designer, while the musical part is handled with Ableton, creating a dynamic dialogue between gesture, image and sound."
+            },
+                        {
+                id: 11,
+                title: "L’Antidote",
+                year: 2025,
+                type: "image",
+                src: "./assets/img/antidote.png",
+                description: "Production of a trilogy of music videos for the trio L’Antidote, conceived as a visual journey through dreams, fantasies and oneiric drifts. The project took shape starting from archival material and fan footage, reworked through artificial intelligence techniques. The aim was to turn this raw content into visual narratives with a strong imaginative charge, with a painterly and material treatment of the images."
+            },
+            {
+                id: 12,
+                title: "Inevitabile",
+                year: 2025,
+                type: "image",
+                src: "./assets/img/inevitabile.png",
+                description: "Curation and development of an artificial intelligence system based on StreamDiffusion, designed to create visual effects inspired by the posterisation of old analogue machines. This system was used in the making of a short film about the Ténéré tree, with the aim of exploring a non-anthropocentric narrative. Unexpectedly, the AI recognised human faces within natural forms, revealing how much technology nonetheless carries the imprint of our own gaze, and raising questions about the possibility of a truly non-human narration."
+            }
+        ];
+
+        const worksGrid = document.getElementById('worksGrid');
+        const modal = document.getElementById('modal');
+        const modalMedia = document.getElementById('modalMedia');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalYear = document.getElementById('modalYear');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalClose = document.getElementById('modalClose');
+
+        function renderWorks() {
+            worksGrid.innerHTML = works.map(work => `
+                <div class="work-item" data-id="${work.id}">
+                    <div class="work-overlay"></div>
+                    <div class="work-image">
+                        <img src="${work.src}" alt="${work.title}" loading="lazy">
+                    </div>
+                    <div class="work-info">
+                        <h3 class="work-title">${work.title}</h3>
+                        <span class="work-year">${work.year}</span>
+                        <p class="work-desc">${work.description.substring(0, 80)}...</p>
+                    </div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.work-item').forEach(item => {
+                item.addEventListener('click', () => openModal(parseInt(item.dataset.id)));
+            });
+        }
+
+        function openModal(id) {
+            const work = works.find(w => w.id === id);
+            if (!work) return;
+
+            modalMedia.innerHTML = work.type === 'video'
+                ? `<video src="${work.src}" autoplay muted loop playsinline></video>`
+                : `<img src="${work.src}" alt="${work.title}">`;
+
+            modalTitle.textContent = work.title;
+            modalYear.textContent = work.year;
+            modalDescription.textContent = work.description;
+
+            document.body.classList.add('modal-open');
+            modal.classList.add('active');
+
+            anime({
+                targets: '.modal-content',
+                scale: [0.9, 1],
+                opacity: [0, 1],
+                duration: 400,
+                easing: 'easeOutCubic'
+            });
+        }
+
+        function closeModal() {
+            anime({
+                targets: '.modal-content',
+                scale: 0.9,
+                opacity: 0,
+                duration: 300,
+                easing: 'easeInCubic',
+                complete: () => {
+                    modal.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                    modalMedia.innerHTML = '';
+                }
+            });
+        }
+
+        modalClose.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        function initHeroAnimation() {
+            const titleLines = document.querySelectorAll('.hero-title-line');
+
+            titleLines.forEach(line => {
+                const text = line.textContent;
+                line.innerHTML = text.split('').map(char => 
+                    char === ' ' ? ' ' : `<span class="char">${char}</span>`
+                ).join('');
+            });
+
+            anime.timeline({ easing: 'easeOutExpo' })
+                .add({
+                    targets: '.hero-title .char',
+                    opacity: [0, 1],
+                    translateY: [50, 0],
+                    duration: 600,
+                    delay: anime.stagger(25, { start: 300 })
+                })
+                .add({
+                    targets: '.hero-subtitle',
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    duration: 600
+                }, '-=300')
+                .add({
+                    targets: '.hero-line',
+                    scaleX: [0, 1],
+                    duration: 800
+                }, '-=300');
+        }
+
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+
+                        if (el.classList.contains('about-content') || 
+                            el.classList.contains('contact-content')) {
+                            anime({
+                                targets: el,
+                                opacity: [0, 1],
+                                translateY: [30, 0],
+                                duration: 800,
+                                easing: 'easeOutExpo'
+                            });
+                        }
+
+                        if (el.classList.contains('about-details')) {
+                            anime({
+                                targets: el,
+                                opacity: [0, 1],
+                                translateY: [30, 0],
+                                duration: 800,
+                                delay: 100,
+                                easing: 'easeOutExpo'
+                            });
+                        }
+
+                        if (el.classList.contains('social-links')) {
+                            anime({
+                                targets: el,
+                                opacity: [0, 1],
+                                translateY: [20, 0],
+                                duration: 800,
+                                delay: 200,
+                                easing: 'easeOutExpo'
+                            });
+                        }
+
+                        if (el.classList.contains('footer')) {
+                            anime({
+                                targets: el,
+                                opacity: [0, 1],
+                                duration: 600,
+                                easing: 'easeOutExpo'
+                            });
+                        }
+
+                        if (el.classList.contains('section-label')) {
+                            anime({
+                                targets: el,
+                                opacity: [0, 1],
+                                translateY: [20, 0],
+                                duration: 600,
+                                easing: 'easeOutExpo'
+                            });
+                        }
+
+                        if (el.classList.contains('work-item')) {
+                            anime({
+                                targets: el,
+                                opacity: [0, 1],
+                                translateY: [40, 0],
+                                duration: 600,
+                                easing: 'easeOutExpo'
+                            });
+                        }
+
+                        observer.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            document.querySelectorAll('.about-content, .about-details, .contact-content, .social-links, .footer, .section-label, .work-item').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        renderWorks();
+        initHeroAnimation();
+        initScrollAnimations();
+    </script>
+</body>
+</html>
